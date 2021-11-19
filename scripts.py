@@ -46,7 +46,10 @@ def get_schoolkid():
         except models.Schoolkid.DoesNotExist:
             print('Не удалось найти ученика с подобным именем, проверьте свой запрос на опечатки')
         except models.Schoolkid.MultipleObjectsReturned:
-            print('Запрос вернул более чем одного ученика. Пожалуйста, уточните его')
+            if user_input:
+                print('Запрос вернул более чем одного ученика. Пожалуйста, уточните его')
+            else:
+                print('Вы ничего не указали при вводе, пожалуйста, введите имя ученика')
         else:
             return schoolkid
 
@@ -57,9 +60,12 @@ def get_random_lesson_by_subject(schoolkid):
         user_input = input()
         try:
             subject = models.Subject.objects.get(title=user_input, year_of_study=schoolkid.year_of_study)
-        except models.Lesson.DoesNotExist:
-            print('Не удалось найти предмет с подобным названием на вашем году обучения,'
-                  'проверьте свой запрос на опечатки')
+        except models.Subject.DoesNotExist:
+            if user_input:
+                print('Не удалось найти предмет с подобным названием на вашем году обучения,'
+                      'проверьте свой запрос на опечатки')
+            else:
+                print('Вы ничего не указали при вводе, пожалуйста, введите имя ученика')
         else:
             lessons = models.Lesson.objects.filter(subject=subject, group_letter=schoolkid.group_letter)
 
